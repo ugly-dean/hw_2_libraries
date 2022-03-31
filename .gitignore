@@ -1,0 +1,33 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Static libraries
+*.a
+*.lib
+
+# Executables
+*.out
+
+# IDE specific files and folders
+.idea/*
+cmake-build-debug/*
+
+# build directories
+build/*
+
+# Temple derictories
+tmp/*
+stress/*
+
+# Generated files in root of project
+coverage.xml
+infer-out/*
+
+# IDE dirs
+.vscode/*
+
+# Input files
+array_input.txt
