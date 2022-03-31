@@ -35,7 +35,7 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           token: 4f9c400b-4119-491d-b9b9-720f4ccb0af7
-          files: coverage-st.xml
+          files: coverage_st.xml
   Dynamic-Testing:
     name: Run tests and generate coverage of static build
     runs-on: ubuntu-latest
@@ -67,4 +67,4 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           token: 4f9c400b-4119-491d-b9b9-720f4ccb0af7
-          files: coverage-dyn.xml
+          files: coverage_dyn.xml
