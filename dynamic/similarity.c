@@ -78,8 +78,8 @@ int run_cos(FILE *in, FILE *out, char *array_file) {
 
 int get_run(FILE *in, FILE *out, FILE *array_input, char *array_file,
             double *vector, double **array, size_t M, size_t N) {
-  __FILE_NAME_SIMILARITY_THREADS = (char *)malloc(strlen(array_file));
-  strcpy(__FILE_NAME_SIMILARITY_THREADS, array_file);
+  __FILE_NAME_SIMILARITY_THREADS = (char *)malloc(strlen(array_file) + 1);
+  strncpy(__FILE_NAME_SIMILARITY_THREADS, array_file, strlen(array_file) + 1);
   int status = SUCCESS;
   if (!get_vector(in, vector, N) || vector_is_null(vector, N) == 1) {
     status = FAIL;
@@ -225,6 +225,7 @@ int find_nearest(double *vector, double **array, size_t M, size_t N,
     data[i].N_t = N;
     data[i].res_t = (Result *)malloc(sizeof(Result));
     data[i].res_t->dist_t = DBL_MAX;
+    data[i].res_t->count_t = 0;
     data[i].res_t->res_t = (double **)malloc(sizeof(double *));
     pthread_create(&threads[i], NULL, thread_compute_cos, &data[i]);
   }
@@ -327,12 +328,15 @@ int64_t file_size(FILE *file) {
 }
 
 int update_res(Result *res, Result *data) {
+  if (!res || !data) {
+    return FAIL;
+  }
   if (data->dist_t < res->dist_t) {
     return final_dist_less(res, data);
   } else if (data->dist_t == res->dist_t) {
     return final_dist_same(res, data);
   }
-    return SUCCESS;
+  return SUCCESS;
 }
 
 int final_dist_less(Result *res, Result *data) {
@@ -340,61 +344,64 @@ int final_dist_less(Result *res, Result *data) {
   res->count_t = data->count_t;
   res->res_t = (double **) realloc(res->res_t, sizeof(double *) * data->count_t);
   if (!res->res_t) {
-      return FAIL;
+    return FAIL;
   }
   for (size_t i = 0; i < data->count_t; ++i) {
-      res->res_t[i] = data->res_t[i];
+    res->res_t[i] = data->res_t[i];
   }
   return SUCCESS;
 }
 
 int final_dist_same(Result *res, Result *data) {
+  if (!res || !res->res_t || !data || !data->res_t) {
+      return FAIL;
+  }
   int status = SUCCESS;
   for (size_t i = 0; i < data->count_t && status == SUCCESS; ++i) {
-      size_t i = res->count_t;
-      res->count_t += data->count_t;
-      res->res_t = (double **) realloc(res->res_t, sizeof(double *) * res->count_t);
-      if (!res->res_t) {
-          status = FAIL;
-      }
-      for ( ; i < res->count_t; ++i) {
-          res->res_t[i] = data->res_t[i];
-      }
+    size_t i = res->count_t;
+    res->count_t += data->count_t;
+    res->res_t = (double **) realloc(res->res_t, sizeof(double *) * res->count_t);
+    if (!res->res_t) {
+      status = FAIL;
+    }
+    for ( ; i < res->count_t; ++i) {
+      res->res_t[i] = data->res_t[i];
+    }
   }
   return status;
 }
 
 int compute_cos(double *array, Result *res, double dist) {
-    int st = SUCCESS;
-    if (dist < -1) {
-        return FAIL;
-    }
-    if (fabs(dist) < fabs(res->dist_t)) {
-        st = found_less_dist(res, dist, array);
-    } else if (dist == res->dist_t) {
-        st = found_same_dist(res, array);
-    }
-    return st;
+  int st = SUCCESS;
+  if (dist < -1) {
+    return FAIL;
+  }
+  if (fabs(dist) < fabs(res->dist_t)) {
+    st = found_less_dist(res, dist, array);
+  } else if (dist == res->dist_t) {
+    st = found_same_dist(res, array);
+  }
+  return st;
 }
 
 int found_less_dist(Result *res, long double dist, double *array) {
-    res->dist_t = dist;
-    res->count_t = 1;
-    free(res->res_t);
-    res->res_t = (double **)malloc(sizeof(double *));
-    if (!res->res_t) {
-        return FAIL;
-    }
-    *(res->res_t) = array;
-    return SUCCESS;
+  res->dist_t = dist;
+  res->count_t = 1;
+  free(res->res_t);
+  res->res_t = (double **)malloc(sizeof(double *));
+  if (!res->res_t) {
+    return FAIL;
+  }
+  *(res->res_t) = array;
+  return SUCCESS;
 }
 
 int found_same_dist(Result *res, double *array) {
-    res->count_t++;
-    res->res_t = (double **)realloc(res->res_t, sizeof(double *) * res->count_t);
-    if (!res->res_t) {
-        return FAIL;
-    }
-    res->res_t[res->count_t - 1] = array;
-    return SUCCESS;
+  res->count_t++;
+  res->res_t = (double **)realloc(res->res_t, sizeof(double *) * res->count_t);
+  if (!res->res_t) {
+    return FAIL;
+  }
+  res->res_t[res->count_t - 1] = array;
+  return SUCCESS;
 }
