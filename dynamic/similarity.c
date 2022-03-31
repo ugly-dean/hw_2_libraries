@@ -151,7 +151,7 @@ int get_array_via_threads(FILE *array_input, double **array, size_t M,
     Thread_read data[THREADS];
     const size_t bytes_per_thread = (fs - start_pos) / THREADS;
     const size_t lines_per_thread = M / THREADS;
-    int error = 0;
+    int error;
     int status = SUCCESS;
     for (size_t i = 0; i < THREADS && status == SUCCESS; ++i) {
         data[i].in_t = fopen(__FILE_NAME_SIMILARITY_THREADS, "r");

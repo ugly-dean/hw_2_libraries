@@ -36,7 +36,7 @@ jobs:
         run: |
           cd utils
           gcc input_generator.c -o gen
-          gen
+          ./gen
           cd ..
           chmod +x ./scripts/stress.sh
           ./scripts/stress.sh

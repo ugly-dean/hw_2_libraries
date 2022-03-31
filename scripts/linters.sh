@@ -42,7 +42,7 @@ RET_CODE=$(($RET_CODE + $?))
 for dir in ${SOURCES_DIRS[*]}
 do
     echo "START ANALYZE cpplint"
-    cpplint --recursive --filter=-legal/copyright,-readability/casting,-build/include_subdir,-build/header_guard $dir
+    cpplint --recursive --filter=-legal/copyright,-readability/casting,-build/include_subdir,-build/header_guard,-runtime/printf,-whitespace/line_length,-whitespace/comments $dir
     RET_CODE=$(($RET_CODE + $?))
 done
 

@@ -21,10 +21,10 @@ jobs:
           cd ..
       - name: Run tests
         run: |
-          valgrind --tool=memcheck --leak-check=full ./build/test_static_sim
-          ./build/test_static_sim_Address
-          ./build/test_static_sim_Thread
-          ./build/test_static_sim_Undefined
+          valgrind --tool=memcheck --leak-check=full ./build/test_sim
+          ./build/test_sim_Address
+          ./build/test_sim_Thread
+          ./build/test_sim_Undefined
       - name: Generate coverage report
         run: |
           chmod +x ./scripts/cov-gen-st.sh

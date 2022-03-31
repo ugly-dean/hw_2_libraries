@@ -21,6 +21,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run linters checks
         run: |
+          cd utils
+          gcc input_generator.c -o gen
+          ./gen
+          cd ..
           chmod +x ./scripts/build.sh
           chmod +x ./scripts/linters.sh
           ./scripts/build.sh -l
