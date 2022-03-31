@@ -1,0 +1,34 @@
+name: Linters passes
+on: [ push ]
+defaults:
+  run:
+    shell: bash
+jobs:
+  Formating:
+    name: Auto-formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checking coding style
+        run: |
+          chmod +x ./scripts/clang-formater.sh
+          ./scripts/clang-formater.sh
+  Linters:
+    name: Running linters check
+    runs-on: ubuntu-latest
+    needs: Formating
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run linters checks
+        run: |
+          chmod +x ./scripts/build.sh
+          chmod +x ./scripts/linters.sh
+          ./scripts/build.sh -l
+          ./scripts/linters.sh
+      - name: Build library and check with clang-tidy
+        run: |
+          sudo apt install clang-tidy
+          chmod +x ./scripts/build.sh
+          ./scripts/build.sh -l
+          cd build
+          make linter-check
