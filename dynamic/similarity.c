@@ -358,14 +358,14 @@ int final_dist_same(Result *res, Result *data) {
   }
   int status = SUCCESS;
   for (size_t i = 0; i < data->count_t && status == SUCCESS; ++i) {
-    size_t i = res->count_t;
+    size_t old_size = res->count_t;
     res->count_t += data->count_t;
     res->res_t = (double **) realloc(res->res_t, sizeof(double *) * res->count_t);
     if (!res->res_t) {
       status = FAIL;
     }
-    for ( ; i < res->count_t; ++i) {
-      res->res_t[i] = data->res_t[i];
+    for (size_t i = 0; i < data->count_t; ++i) {
+      res->res_t[i + old_size] = data->res_t[i];
     }
   }
   return status;
