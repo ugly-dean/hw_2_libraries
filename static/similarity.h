@@ -3,24 +3,24 @@
 
 #include "stdio.h"
 
-typedef struct Result {
+typedef struct result_t {
   size_t count_t;
   double dist_t;
   double **res_t;
-} Result;
+} result_t;
 
-int Result_print(FILE *out, Result *res, size_t N);
+int result_print(FILE *out, result_t *res, size_t N);
 
 int run_cos(FILE *in, FILE *out, char *array_file);
 
 int get_vector(FILE *in, double *vector, size_t N);
 
-double cos_dist(double *a, double *b, size_t N);
+double cos_dist(double *left, double *right, size_t N);
 
 int find_nearest(double *vector, double **array, size_t M, size_t N,
-                 Result *res);
+                 result_t *res);
 
-int print_vector(FILE *out, double vector[], size_t N);
+int print_vector(FILE *out, double *vector, size_t N);
 
 int vector_is_null(double *vector, size_t N);
 
