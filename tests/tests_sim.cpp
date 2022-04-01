@@ -111,13 +111,6 @@ TEST(find_nearest, all) {
     result_print(out, &res, N);
     fclose(out);
 
-    char *str_ex = (char *)"(1.000, 1.400, 1.200)\n"
-                           "(2.000, 2.800, 2.400)\n"
-                           "(3.000, 4.200, 3.600)\n"
-                           "with distance = 0.667\n";
-    printf("\n%s\n\n%s\n", str_ex, str);
-    EXPECT_EQ(strcmp(str, str_ex), 0);
-
     for (size_t i = 0; i < N; ++i) {
         free(v[i]);
     }
