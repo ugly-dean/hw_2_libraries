@@ -101,7 +101,7 @@ TEST(find_nearest, all) {
                            "(2.000, 2.800, 2.400)\n"
                            "(3.000, 4.200, 3.600)\n"
                            "with distance = 0.667\n";
-    //printf("\n%s\n\n%s\n", str_ex, str);
+    printf("\n%s\n\n%s\n", str_ex, str);
     EXPECT_EQ(strcmp(str, str_ex), 0);
 //    free(res.res_t);
 
