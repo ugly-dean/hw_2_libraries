@@ -398,10 +398,11 @@ int found_less_dist(Result *res, long double dist, double *array) {
 
 int found_same_dist(Result *res, double *array) {
   res->count_t++;
-  res->res_t = (double **)realloc(res->res_t, sizeof(double *) * res->count_t);
-  if (!res->res_t) {
+  double **tmp = (double **)realloc(res->res_t, sizeof(double *) * res->count_t);
+  if (!tmp) {
     return FAIL;
   }
+  res->res_t = tmp;
   res->res_t[res->count_t - 1] = array;
   return SUCCESS;
 }

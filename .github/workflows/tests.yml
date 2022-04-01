@@ -37,7 +37,7 @@ jobs:
           token: 4f9c400b-4119-491d-b9b9-720f4ccb0af7
           files: coverage_st.xml
   Dynamic-Testing:
-    name: Run tests and generate coverage of static build
+    name: Run tests and generate coverage of dynamic build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
