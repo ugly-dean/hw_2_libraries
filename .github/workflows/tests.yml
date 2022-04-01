@@ -1,0 +1,70 @@
+name: Testing
+on: [ push ]
+defaults:
+  run:
+    shell: bash
+jobs:
+  Static-Testing:
+    name: Run tests and generate coverage of static build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build tests
+        run: |
+          sudo apt update
+          sudo apt install valgrind
+          export ASAN_OPTIONS=verify_asan_link_order=0
+          chmod +x ./scripts/build.sh
+          ./scripts/build.sh -tc
+          cd build
+          make
+          cd ..
+      - name: Run tests
+        run: |
+          valgrind --tool=memcheck --leak-check=full ./build/tests_sim
+          ./build/tests_sim_Address
+          ./build/tests_sim_Thread
+          ./build/tests_sim_Undefined
+      - name: Generate coverage report
+        run: |
+          chmod +x ./scripts/cov-gen-st.sh
+          ./scripts/cov-gen-st.sh
+      - name: Codecov
+        run: |
+      - name: Getting code coverage data
+        uses: codecov/codecov-action@v2
+        with:
+          token: 4f9c400b-4119-491d-b9b9-720f4ccb0af7
+          files: coverage_st.xml
+  Dynamic-Testing:
+    name: Run tests and generate coverage of dynamic build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build tests
+        run: |
+          sudo apt update
+          sudo apt install valgrind
+          export ASAN_OPTIONS=verify_asan_link_order=0
+          chmod +x ./scripts/build.sh
+          ./scripts/build.sh -ptc
+          cd build
+          make
+          cd ..
+      - name: Run tests
+        run: |
+          valgrind --tool=memcheck --leak-check=full ./build/tests_sim
+          ./build/tests_sim_Address
+          ./build/tests_sim_Thread
+          ./build/tests_sim_Undefined
+      - name: Generate coverage report
+        run: |
+          chmod +x ./scripts/cov-gen-dyn.sh
+          ./scripts/cov-gen-dyn.sh
+      - name: Codecov
+        run: |
+      - name: Getting code coverage data
+        uses: codecov/codecov-action@v2
+        with:
+          token: 4f9c400b-4119-491d-b9b9-720f4ccb0af7
+          files: coverage_dyn.xml

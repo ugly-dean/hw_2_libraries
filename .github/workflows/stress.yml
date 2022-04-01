@@ -1,0 +1,42 @@
+name: Stress-testing
+on: [ push ]
+defaults:
+  run:
+    shell: bash
+jobs:
+  Static-Building:
+    name: Build static solution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Building
+        run: |
+          chmod +x ./scripts/build.sh
+          ./scripts/build.sh
+          cd build
+          make
+  Dynamic-Building:
+    name: Build dynamic solution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Building
+        run: |
+          chmod +x ./scripts/build.sh
+          ./scripts/build.sh -p
+          cd build
+          make
+  Testing:
+    name: Run and compare static and dynamic implementations
+    runs-on: ubuntu-latest
+    needs: [Static-Building, Dynamic-Building]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build tests
+        run: |
+          cd utils
+          gcc input_generator.c -o gen
+          ./gen
+          cd ..
+          chmod +x ./scripts/stress.sh
+          ./scripts/stress.sh
